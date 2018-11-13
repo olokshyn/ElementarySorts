@@ -3,12 +3,17 @@ import unittest
 import random
 from timeit import default_timer as timer
 
-from sorts import selection_sort
+from sorts import selection_sort, insertion_sort
 
 
 N = 1000
 MAX_2_POWER = 4
 BUILD_PLOTS = False
+
+
+def _function_is_empty(func):
+    empty_function_code = b'd\x00\x00S'
+    return func.__code__.co_code == empty_function_code
 
 
 class BaseSortTests(metaclass=abc.ABCMeta):
@@ -41,6 +46,9 @@ class BaseSortTests(metaclass=abc.ABCMeta):
     def test_the_same(self):
         self._perform_test([1, 2, 2, 3, 2, 4, 6])
 
+    def test_arbitrary(self):
+        self._perform_test([10, -4, 0, 0.3, -13.3, 5, -4, 10, 22, -4, 5])
+
     def test_reversed(self):
         self._perform_test(list(range(100, 0, -1)))
 
@@ -48,6 +56,9 @@ class BaseSortTests(metaclass=abc.ABCMeta):
         self._perform_test(self._build_random_array())
 
     def test_complexity(self):
+        if _function_is_empty(self.check_complexity) and not BUILD_PLOTS:
+            return
+
         random.seed()
         times_reversed = []
         times_random = []
@@ -99,6 +110,13 @@ class SelectionSortTests(BaseSortTests, unittest.TestCase):
 
     def sort(self, array):
         selection_sort(array)
+        return array
+
+
+class InsertionSortTests(BaseSortTests, unittest.TestCase):
+
+    def sort(self, array):
+        insertion_sort(array)
         return array
 
 

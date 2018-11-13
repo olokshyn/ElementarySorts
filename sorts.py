@@ -10,3 +10,11 @@ def selection_sort(array):
                            key=operator.itemgetter(1),
                            default=(0, 0))
         array[i], array[min_index] = array[min_index], array[i]
+
+
+def insertion_sort(array):
+    for i in range(len(array)):
+        for j in range(i - 1, -1, -1):
+            if array[j] <= array[j + 1]:
+                break
+            array[j], array[j + 1] = array[j + 1], array[j]

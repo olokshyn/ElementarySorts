@@ -3,7 +3,7 @@ import unittest
 import random
 from timeit import default_timer as timer
 
-from sorts import selection_sort, insertion_sort, shell_sort
+from sorts import selection_sort, insertion_sort, shell_sort, merge_sort
 
 
 N = 1000
@@ -124,6 +124,13 @@ class ShellSortTests(BaseSortTests, unittest.TestCase):
 
     def sort(self, array):
         shell_sort(array)
+        return array
+
+
+class MergeSortTests(BaseSortTests, unittest.TestCase):
+
+    def sort(self, array):
+        merge_sort(array)
         return array
 
 

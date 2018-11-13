@@ -3,8 +3,6 @@ import operator
 
 
 def selection_sort(array):
-    if len(array) < 2:  # Not required, just for optimization
-        return
     for i in range(len(array) - 1):
         min_index, _ = min(itertools.islice(enumerate(array), i, None),
                            key=operator.itemgetter(1),
@@ -12,9 +10,19 @@ def selection_sort(array):
         array[i], array[min_index] = array[min_index], array[i]
 
 
-def insertion_sort(array):
-    for i in range(len(array)):
-        for j in range(i - 1, -1, -1):
-            if array[j] <= array[j + 1]:
+def insertion_sort(array, h=1):
+    for i in range(h, len(array)):
+        for j in range(i - h, -1, -h):
+            if array[j] <= array[j + h]:
                 break
-            array[j], array[j + 1] = array[j + 1], array[j]
+            array[j], array[j + h] = array[j + h], array[j]
+
+
+def shell_sort(array):
+    h = 1
+    while h < len(array) // 3:
+        h = 3 * h + 1
+
+    while h >= 1:
+        insertion_sort(array, h)
+        h //= 3

@@ -1,6 +1,7 @@
 from itertools import islice
 from operator import itemgetter
 from heapq import merge
+from math import log2
 
 
 MERGE_SORT_MIN_BIAS = 7
@@ -48,7 +49,28 @@ def merge_sort(array):
         sort(mid, hi)
         if array[mid - 1] <= array[mid]:
             return
-        array[lo:hi] = merge(islice(iter(array), lo, mid),
-                             islice(iter(array), mid, hi))
+        merge_iter = merge(islice(iter(array), lo, mid),
+                           islice(iter(array), mid, hi))
+        # The following assignment is safe when array is a list:
+        # https://stackoverflow.com/questions/53286531/assign-iterators-to-a-python-slice
+        array[lo:hi] = merge_iter if isinstance(array, list) else list(merge_iter)
 
     sort(0, len(array))
+
+
+def merge_sort_non_recursive(array):
+    if not array:
+        return
+    for sz in (2 ** p for p in
+               range(0,
+                     int(log2(len(array))) + 1
+                     )
+               ):
+        for lo in range(0, len(array) - sz, 2 * sz):
+            mid = lo + sz
+            hi = lo + 2 * sz
+            merge_iter = merge(islice(iter(array), lo, mid),
+                               islice(iter(array), mid, hi))
+            # The following assignment is safe when array is a list:
+            # https://stackoverflow.com/questions/53286531/assign-iterators-to-a-python-slice
+            array[lo:hi] = merge_iter if isinstance(array, list) else list(merge_iter)

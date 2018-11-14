@@ -2,7 +2,7 @@ import unittest
 import random
 from timeit import default_timer as timer
 
-from sorts import selection_sort, insertion_sort, shell_sort, merge_sort
+from sorts import selection_sort, insertion_sort, shell_sort, merge_sort, merge_sort_non_recursive
 
 
 N = 1000
@@ -55,7 +55,8 @@ def build_test_case(sorter):
             self._perform_test(list(range(100, 0, -1)))
 
         def test_random(self):
-            self._perform_test(self._build_random_array())
+            for _ in range(5):
+                self._perform_test(self._build_random_array())
 
         def test_complexity(self):
             if _function_is_empty(self.check_complexity) and not BUILD_PLOTS:
@@ -109,7 +110,7 @@ def build_test_case(sorter):
 if __name__ == '__main__':
     random.seed()
 
-    sorters = (selection_sort, insertion_sort, shell_sort, merge_sort)
+    sorters = (selection_sort, insertion_sort, shell_sort, merge_sort, merge_sort_non_recursive)
 
     suites = []
     for sorter in sorters:

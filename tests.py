@@ -4,7 +4,8 @@ from timeit import default_timer as timer
 
 from sorts import (selection_sort, insertion_sort, shell_sort,
                    merge_sort, merge_sort_non_recursive,
-                   quick_sort, quick_sort_3_way)
+                   quick_sort, quick_sort_3_way,
+                   heap_sort)
 
 
 N = 1000
@@ -117,7 +118,8 @@ if __name__ == '__main__':
 
     sorters = (selection_sort, insertion_sort, shell_sort,
                merge_sort, merge_sort_non_recursive,
-               quick_sort, quick_sort_3_way)
+               quick_sort, quick_sort_3_way,
+               heap_sort)
 
     suites = []
     for sorter in sorters:

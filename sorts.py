@@ -144,3 +144,62 @@ def quick_sort_3_way(array):
         sort(gt + 1, hi)
 
     sort(0, len(array))
+
+
+def heap_sort(array):
+
+    class PriorityQueue:  # Just for demo, use heapq instead
+
+        def __init__(self, capacity, ascending=True):
+            self._heap = [None] * (capacity + 1)
+            self._n = 0
+            self._ascending = ascending
+
+        def insert(self, value):
+            self._n += 1
+            self._heap[self._n] = value
+            self._swim(self._n)
+
+        def pop(self):
+            value = self._heap[1]
+            self._exch(1, self._n)
+            self._heap[self._n] = None
+            self._n -= 1
+            self._sink(1)
+            return value
+
+        def consume(self):
+            while self._n > 0:
+                yield self.pop()
+
+        def empty(self):
+            return self._n == 0
+
+        def _swim(self, k):
+            while k > 1 and self._less(k // 2, k):
+                self._exch(k, k // 2)
+                k //= 2
+
+        def _sink(self, k):
+            while 2 * k <= self._n:
+                j = 2 * k
+                if j < self._n and self._less(j, j + 1):
+                    j += 1
+                if not self._less(k, j):
+                    break
+                self._exch(k, j)
+                k = j
+
+        def _less(self, i, j):
+            if self._ascending:
+                return self._heap[i] >= self._heap[j]
+            else:
+                return self._heap[i] < self._heap[j]
+
+        def _exch(self, i, j):
+            self._heap[i], self._heap[j] = self._heap[j], self._heap[i]
+
+    queue = PriorityQueue(len(array))
+    for value in array:
+        queue.insert(value)
+    array[:] = queue.consume()

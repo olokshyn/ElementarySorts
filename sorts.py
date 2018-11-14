@@ -148,32 +148,46 @@ def quick_sort_3_way(array):
 
 def heap_sort(array):
 
-    class PriorityQueue:  # Just for demo, use heapq instead
+    class Heap:  # Just for demo, use heapq instead
 
-        def __init__(self, capacity, ascending=True):
-            self._heap = [None] * (capacity + 1)
-            self._n = 0
+        def __init__(self, *, array=None, capacity=None, ascending=False):
+            if array is None and capacity is None:
+                raise ValueError
+            if array is None:
+                self._heap = [None] * capacity
+                self._n = 0
+            else:
+                self._heap = array
+                self._n = len(array)
             self._ascending = ascending
 
         def insert(self, value):
             self._n += 1
-            self._heap[self._n] = value
+            self._set(self._n, value)
             self._swim(self._n)
 
         def pop(self):
-            value = self._heap[1]
+            value = self._get(1)
             self._exch(1, self._n)
-            self._heap[self._n] = None
+            self._set(self._n, None)
             self._n -= 1
             self._sink(1)
             return value
 
         def consume(self):
-            while self._n > 0:
+            while not self.empty():
                 yield self.pop()
 
         def empty(self):
             return self._n == 0
+
+        def sort(self):
+            for k in range(self._n // 2, 0, -1):
+                self._sink(k)
+            while self._n > 1:
+                self._exch(1, self._n)
+                self._n -= 1
+                self._sink(1)
 
         def _swim(self, k):
             while k > 1 and self._less(k // 2, k):
@@ -192,14 +206,18 @@ def heap_sort(array):
 
         def _less(self, i, j):
             if self._ascending:
-                return self._heap[i] >= self._heap[j]
+                return self._get(i) >= self._get(j)
             else:
-                return self._heap[i] < self._heap[j]
+                return self._get(i) < self._get(j)
 
         def _exch(self, i, j):
-            self._heap[i], self._heap[j] = self._heap[j], self._heap[i]
+            self._heap[i - 1], self._heap[j - 1] = self._heap[j - 1], self._heap[i - 1]
 
-    queue = PriorityQueue(len(array))
-    for value in array:
-        queue.insert(value)
-    array[:] = queue.consume()
+        def _get(self, i):
+            return self._heap[i - 1]
+
+        def _set(self, i, value):
+            self._heap[i - 1] = value
+
+    heap = Heap(array=array)
+    heap.sort()

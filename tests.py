@@ -2,7 +2,9 @@ import unittest
 import random
 from timeit import default_timer as timer
 
-from sorts import selection_sort, insertion_sort, shell_sort, merge_sort, merge_sort_non_recursive
+from sorts import (selection_sort, insertion_sort, shell_sort,
+                   merge_sort, merge_sort_non_recursive,
+                   quick_sort, quick_sort_3_way)
 
 
 N = 1000
@@ -50,6 +52,9 @@ def build_test_case(sorter):
 
         def test_arbitrary(self):
             self._perform_test([10, -4, 0, 0.3, -13.3, 5, -4, 10, 22, -4, 5])
+
+        def test_many_equal(self):
+            self._perform_test([1, 4, 2, 1, 3, 1, 2, 3, 1, 4, 1, 3, 5, 2, 1, 3, 4, 2, 4, 5, 1, 2, 3, 4])
 
         def test_reversed(self):
             self._perform_test(list(range(100, 0, -1)))
@@ -110,7 +115,9 @@ def build_test_case(sorter):
 if __name__ == '__main__':
     random.seed()
 
-    sorters = (selection_sort, insertion_sort, shell_sort, merge_sort, merge_sort_non_recursive)
+    sorters = (selection_sort, insertion_sort, shell_sort,
+               merge_sort, merge_sort_non_recursive,
+               quick_sort, quick_sort_3_way)
 
     suites = []
     for sorter in sorters:

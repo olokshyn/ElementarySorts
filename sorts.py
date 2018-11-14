@@ -2,9 +2,10 @@ from itertools import islice
 from operator import itemgetter
 from heapq import merge
 from math import log2
+from random import shuffle
 
 
-MERGE_SORT_MIN_BIAS = 7
+SORT_ELEMENTS_BIAS = 7
 
 
 def selection_sort(array):
@@ -38,7 +39,7 @@ def merge_sort(array):
     def sort(lo, hi):
         if lo >= hi - 1:
             return
-        if hi - lo <= MERGE_SORT_MIN_BIAS:
+        if hi - lo <= SORT_ELEMENTS_BIAS:
             temp = array[lo:hi]
             insertion_sort(temp)
             array[lo:hi] = temp
@@ -74,3 +75,72 @@ def merge_sort_non_recursive(array):
             # The following assignment is safe when array is a list:
             # https://stackoverflow.com/questions/53286531/assign-iterators-to-a-python-slice
             array[lo:hi] = merge_iter if isinstance(array, list) else list(merge_iter)
+
+
+def quick_sort(array):
+    shuffle(array)
+
+    def partition(lo, hi):
+        while True:
+            i = lo + 1
+            for i in range(i, hi):
+                if array[i] > array[lo]:
+                    break
+
+            j = hi - 1
+            for j in range(j, lo - 1, -1):
+                if array[j] <= array[lo]:  # Stop on equal keys
+                    break
+
+            if i >= j:
+                break
+            array[i], array[j] = array[j], array[i]
+
+        array[lo], array[j] = array[j], array[lo]
+        return j
+
+    def sort(lo, hi):
+        if hi - lo < 2:
+            return
+        if hi - lo <= SORT_ELEMENTS_BIAS:
+            temp = array[lo:hi]
+            insertion_sort(temp)
+            array[lo:hi] = temp
+            return
+
+        j = partition(lo, hi)
+        sort(lo, j)
+        sort(j + 1, hi)
+
+    sort(0, len(array))
+
+
+def quick_sort_3_way(array):
+    shuffle(array)
+
+    def sort(lo, hi):
+        if hi - lo < 2:
+            return
+        if hi - lo <= SORT_ELEMENTS_BIAS:
+            temp = array[lo:hi]
+            insertion_sort(temp)
+            array[lo:hi] = temp
+            return
+
+        lt, i, gt = lo, lo, hi - 1
+        v = array[lo]
+        while i <= gt:
+            if array[i] < v:
+                array[lt], array[i] = array[i], array[lt]
+                i += 1
+                lt += 1
+            elif array[i] > v:
+                array[gt], array[i] = array[i], array[gt]
+                gt -= 1
+            else:
+                i += 1
+
+        sort(lo, lt)
+        sort(gt + 1, hi)
+
+    sort(0, len(array))
